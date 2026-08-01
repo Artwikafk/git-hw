@@ -1,0 +1,21 @@
+---
+- name: Change system MOTD
+  hosts: web
+  become: yes
+  vars:
+    motd_message: "Welcome to Ansible-managed server!\nAll access is logged."
+
+  tasks:
+    - name: Create custom MOTD file
+      copy:
+        content: |
+          {{ motd_message }}
+        dest: /etc/motd
+        mode: '0644'
+        owner: root
+        group: root
+        backup: yes
+
+    - name: Display new MOTD
+      debug:
+        msg: "New MOTD set on {{ ansible_hostname }}"

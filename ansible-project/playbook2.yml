@@ -1,0 +1,60 @@
+---
+- name: Install and configure tuned as a daemon
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Install tuned package
+      apt:
+        name: tuned
+        state: present
+        update_cache: yes
+
+    - name: Create tuned directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - /run/tuned
+        - /var/run/tuned
+        - /etc/tuned
+        - /var/log/tuned
+
+    - name: Stop any existing tuned processes
+      shell: pkill -f tuned || true
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Start tuned daemon with proper arguments
+      shell: |
+        /usr/sbin/tuned -d -P /var/run/tuned/tuned.pid &
+        sleep 2
+        echo "Started tuned"
+      args:
+        executable: /bin/bash
+      register: tuned_start
+      changed_when: true
+
+    - name: Verify tuned is running
+      shell: ps aux | grep -v grep | grep "/usr/sbin/tuned"
+      register: tuned_verify
+      changed_when: false
+      retries: 5
+      delay: 2
+      until: tuned_verify.stdout != ""
+      failed_when: tuned_verify.stdout == ""
+
+    - name: Show tuned process
+      debug:
+        msg: |
+          ✅ tuned is running on {{ ansible_hostname }}
+          Process: {{ tuned_verify.stdout }}
+
+    - name: Add tuned to crontab for persistence
+      cron:
+        name: "tuned daemon"
+        minute: "*/5"
+        job: "pgrep -f 'tuned -d' || /usr/sbin/tuned -d -P /var/run/tuned/tuned.pid > /dev/null 2>&1"
+        state: present
+      when: ansible_virtualization_type == "docker"

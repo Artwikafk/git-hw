@@ -1,0 +1,50 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ENV['VAGRANT_SERVER_URL'] = 'https://vagrant.elab.pro'
+
+Vagrant.configure("2") do |config|
+  # Отключаем использование ключей
+  config.ssh.password = "vagrant"
+  config.ssh.insert_key = false
+  config.ssh.keys_only = false
+  config.ssh.forward_agent = false
+  config.ssh.verify_host_key = false
+
+  config.vm.provider "docker" do |d|
+    d.image = "ubuntu:22.04"
+    d.has_ssh = true
+    d.remains_running = true
+    d.cmd = [
+      "/bin/bash", "-c",
+      "apt-get update && " \
+      "DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server sudo python3 python3-pip curl wget unzip && " \
+      "useradd -m -s /bin/bash vagrant 2>/dev/null || true && " \
+      "echo 'vagrant:vagrant' | chpasswd && " \
+      "echo 'vagrant ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && " \
+      "mkdir -p /var/run/sshd && " \
+      "sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && " \
+      "sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && " \
+      "ssh-keygen -A 2>/dev/null || true && " \
+      "/usr/sbin/sshd -D"
+    ]
+  end
+
+  config.vm.define "web1" do |web1|
+    web1.vm.hostname = "web1"
+    web1.vm.provider "docker" do |d|
+      d.name = "web1"
+      d.create_args = ["--hostname", "web1"]
+      d.ports = ["2222:22"]
+    end
+  end
+
+  config.vm.define "web2" do |web2|
+    web2.vm.hostname = "web2"
+    web2.vm.provider "docker" do |d|
+      d.name = "web2"
+      d.create_args = ["--hostname", "web2"]
+      d.ports = ["2200:22"]
+    end
+  end
+end

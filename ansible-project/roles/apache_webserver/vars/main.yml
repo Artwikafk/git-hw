@@ -1,0 +1,4 @@
+---
+apache_port: 80
+apache_service_name: "apache2"  # Для Ubuntu
+apache_docroot: "/var/www/html"

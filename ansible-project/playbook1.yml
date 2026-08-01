@@ -1,0 +1,40 @@
+---
+- name: Download and extract archive
+  hosts: web
+  become: yes
+  vars:
+    download_url: "https://downloads.apache.org/kafka/4.3.1/kafka-4.3.1-src.tgz"
+    download_dir: "/tmp"
+    extract_dir: "/opt/kafka"
+    archive_name: "kafka.tgz"
+
+  tasks:
+    - name: Create extraction directory
+      file:
+        path: "{{ extract_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download Kafka archive
+      get_url:
+        url: "{{ download_url }}"
+        dest: "{{ download_dir }}/{{ archive_name }}"
+        timeout: 60
+        validate_certs: yes
+
+    - name: Extract archive
+      unarchive:
+        src: "{{ download_dir }}/{{ archive_name }}"
+        dest: "{{ extract_dir }}"
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+        creates: "{{ extract_dir }}/bin"
+
+    - name: Clean up archive file
+      file:
+        path: "{{ download_dir }}/{{ archive_name }}"
+        state: absent
+
+    - name: Display extraction result
+      debug:
+        msg: "Kafka extracted to {{ extract_dir }}"

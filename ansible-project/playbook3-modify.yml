@@ -1,0 +1,36 @@
+---
+- name: Dynamic MOTD with IP and hostname
+  hosts: web
+  become: yes
+  vars:
+    admin_name: "Admin"
+    
+  tasks:
+    - name: Gather facts
+      setup:
+      when: ansible_facts is not defined
+
+    - name: Create dynamic MOTD file
+      copy:
+        content: |
+          ****************************************
+          Hostname: {{ ansible_hostname }}
+          IP Address: {{ ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0]) }}
+          
+          Welcome {{ admin_name }}!
+          Have a great day managing this server!
+          ****************************************
+        dest: /etc/motd
+        mode: '0644'
+        owner: root
+        group: root
+        backup: yes
+
+    - name: Show MOTD content
+      shell: cat /etc/motd
+      register: final_motd
+      changed_when: false
+
+    - name: Print MOTD
+      debug:
+        var: final_motd.stdout_lines
