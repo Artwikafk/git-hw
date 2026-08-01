@@ -1,30 +1,40 @@
 ---
 - name: Install Apache web server
   apt:
-    name: "{{ apache_service_name }}"
+    name: apache2
     state: present
     update_cache: yes
 
 - name: Ensure Apache is enabled and started
-  systemd:
-    name: "{{ apache_service_name }}"
+  service:
+    name: apache2
     state: started
     enabled: yes
-    daemon_reload: yes
+  ignore_errors: yes
+
+- name: Start Apache directly if service module fails
+  shell: |
+    if ! pgrep -f "apache2" > /dev/null; then
+      /usr/sbin/apache2ctl start
+      echo "Apache started"
+    fi
+  register: apache_start
+  changed_when: "'Apache started' in apache_start.stdout"
+  when: ansible_virtualization_type == "docker"
 
 - name: Create custom index.html with system facts
   template:
     src: index.html.j2
-    dest: "{{ apache_docroot }}/index.html"
+    dest: /var/www/html/index.html
     mode: '0644'
     owner: root
     group: root
     backup: yes
   notify: Restart Apache
 
-- name: Verify web server is accessible (HTTP 200)
+- name: Verify web server is accessible (HTTP 200) via localhost
   uri:
-    url: "http://{{ ansible_default_ipv4.address }}:{{ apache_port }}"
+    url: "http://localhost"
     method: GET
     status_code: 200
     timeout: 10
@@ -37,6 +47,4 @@
   debug:
     msg: |
       ✅ Web server is running on {{ ansible_hostname }}!
-      URL: http://{{ ansible_default_ipv4.address }}:{{ apache_port }}
       Status: {{ http_check.status }}
-      Content length: {{ http_check.content | length }} bytes

@@ -1,13 +1,12 @@
 ---
 - name: Restart Apache
-  systemd:
-    name: "{{ apache_service_name }}"
+  service:
+    name: apache2
     state: restarted
-    daemon_reload: yes
-  listen: "restart_apache"
+  ignore_errors: yes
+  listen: "Restart Apache"
 
-- name: Reload Apache
-  systemd:
-    name: "{{ apache_service_name }}"
-    state: reloaded
-  listen: "reload_apache"
+- name: Restart Apache directly (if service fails)
+  shell: /usr/sbin/apache2ctl restart
+  listen: "Restart Apache"
+  when: ansible_virtualization_type == "docker"

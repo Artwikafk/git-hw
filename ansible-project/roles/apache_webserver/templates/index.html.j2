@@ -1,126 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Information - {{ ansible_hostname }}</title>
+    <title>System Info - {{ ansible_hostname }}</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            background: white;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 600px;
-            width: 100%;
-        }
-        h1 {
-            color: #333;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-            margin-top: 0;
-        }
-        .info-item {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border-left: 4px solid #667eea;
-        }
-        .label {
-            font-weight: bold;
-            color: #555;
-            display: inline-block;
-            width: 140px;
-        }
-        .value {
-            color: #333;
-            font-family: monospace;
-        }
-        .timestamp {
-            margin-top: 30px;
-            color: #999;
-            font-size: 0.9em;
-            text-align: center;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        .badge {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.8em;
-        }
+        body { font-family: Arial; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        h1 { color: #333; border-bottom: 2px solid #4CAF50; }
+        .info { margin: 15px 0; padding: 10px; background: #f8f9fa; border-left: 4px solid #4CAF50; }
+        .label { font-weight: bold; display: inline-block; width: 140px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🖥️ System Information</h1>
-        <p><span class="badge">{{ ansible_hostname }}</span></p>
-        
-        <div class="info-item">
-            <span class="label">Hostname:</span>
-            <span class="value">{{ ansible_hostname }}</span>
+        <h1>🖥️ System Information - {{ ansible_hostname }}</h1>
+        <div class="info">
+            <span class="label">Hostname:</span> {{ ansible_hostname }}
         </div>
-        
-        <div class="info-item">
-            <span class="label">IP Address:</span>
-            <span class="value">{{ ansible_default_ipv4.address | default('Not available') }}</span>
+        <div class="info">
+            <span class="label">CPU Cores:</span> {{ ansible_processor_cores }}
         </div>
-        
-        <div class="info-item">
-            <span class="label">CPU:</span>
-            <span class="value">{{ ansible_processor_cores }} cores / {{ ansible_processor_vcpus }} threads</span>
-            <br>
-            <span class="value" style="font-size:0.9em; color:#666;">
-                {% if ansible_processor[0] is defined %}
-                    {{ ansible_processor[0] }}
-                {% else %}
-                    {{ ansible_processor | first }}
-                {% endif %}
-            </span>
+        <div class="info">
+            <span class="label">CPU Threads:</span> {{ ansible_processor_vcpus }}
         </div>
-        
-        <div class="info-item">
-            <span class="label">RAM:</span>
-            <span class="value">{{ (ansible_memtotal_mb / 1024) | round(2) }} GB ({{ ansible_memtotal_mb }} MB)</span>
+        <div class="info">
+            <span class="label">RAM:</span> {{ ansible_memtotal_mb }} MB
         </div>
-        
-        <div class="info-item">
-            <span class="label">HDD (Root):</span>
-            {% set root_dev = ansible_mounts | selectattr('mount', 'equalto', '/') | first %}
-            <span class="value">
-                {{ (root_dev.size_total / (1024**3)) | round(2) }} GB
-                <br>
-                <span style="font-size:0.9em; color:#666;">
-                    Used: {{ ((root_dev.size_total - root_dev.size_available) / (1024**3)) | round(2) }} GB
-                    (Free: {{ (root_dev.size_available / (1024**3)) | round(2) }} GB)
-                </span>
-            </span>
+        <div class="info">
+            <span class="label">OS:</span> {{ ansible_distribution }} {{ ansible_distribution_version }}
         </div>
-        
-        <div class="info-item">
-            <span class="label">OS:</span>
-            <span class="value">{{ ansible_distribution }} {{ ansible_distribution_version }}</span>
+        <div class="info">
+            <span class="label">Uptime:</span> {{ (ansible_uptime_seconds / 3600) | int }} hours
         </div>
-        
-        <div class="info-item">
-            <span class="label">Uptime:</span>
-            <span class="value">{{ ansible_uptime_seconds | int | human_readable }}</span>
-        </div>
-        
-        <div class="timestamp">
+        <div style="margin-top: 20px; color: #999; text-align: center;">
             Generated: {{ ansible_date_time.iso8601 }}
         </div>
     </div>
