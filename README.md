@@ -42,7 +42,7 @@
 
 
 ![Стартовая страница Nginx](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NginxIndex.jpg)
-![Скриншот балансировщика и целевой группы](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NLB.jpg)
-
+![Скриншот балансировщика и целевой группы1](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NLB.jpg)
+![Скриншот балансировщика и целевой группы2](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NLB1.jpg)
 
 
