@@ -30,13 +30,12 @@
 
 ### Выполнение задания 1
 1. `Устанавливаем Terraform командами:  
-   sudo apt install unzip -y  
-   wget https://hashicorp-releases.yandexcloud.net/terraform/1.15.8/terraform_1.15.8_linux_amd64.zip  
-   unzip terraform_1.15.8_linux_amd64.zip  
+   sudo apt install unzip -y  \
+   wget https://hashicorp-releases.yandexcloud.net/terraform/1.15.8/terraform_1.15.8_linux_amd64.zip  \
+   unzip terraform_1.15.8_linux_amd64.zip  \
    cp /usr/bin .terraform`  
-2. `Создаем main.tf`
-3. `Создаем main.tf`
-4. `Создаем main.tf`
+2. `Создаем и редактируем main.tf`
+
 
 
 ![Terraform Playbook](https://github.com/Artwikafk/git-hw/blob/Cloud/Playbook_2_VM)
