@@ -38,16 +38,12 @@
 3. `Создаем main.tf`
 4. `Создаем main.tf`
 
-```
-![Terraform Playbook](https://github.com/Artwikafk/git-hw/blob/Cloud/Playbook_2_VM)
-....
-....
-....
-....
-```
 
-`![Стартовая страница Nginx](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NginxIndex.jpg)`
-`![Скриншот балансировщика и целевой группы](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NLB.jpg)`
-`![Скриншот 3](ссылка на скриншот 1)`
+![Terraform Playbook](https://github.com/Artwikafk/git-hw/blob/Cloud/Playbook_2_VM)
+
+
+![Стартовая страница Nginx](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NginxIndex.jpg)
+![Скриншот балансировщика и целевой группы](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NLB.jpg)
+![Скриншот 3](ссылка на скриншот 1)
 
 
