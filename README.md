@@ -44,6 +44,6 @@
 
 ![Стартовая страница Nginx](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NginxIndex.jpg)
 ![Скриншот балансировщика и целевой группы](https://github.com/Artwikafk/git-hw/blob/Cloud/img/NLB.jpg)
-![Скриншот 3](ссылка на скриншот 1)
+
 
 
